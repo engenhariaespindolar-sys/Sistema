@@ -10,6 +10,7 @@ export const OPERACAO_STATUS: Record<string, { label: string; tone: BadgeTone }>
   venda: { label: "Em venda", tone: "info" },
   vendido: { label: "Vendido", tone: "success" },
   encerrado: { label: "Encerrado", tone: "neutral" },
+  descartado: { label: "Descartado", tone: "danger" },
 };
 
 export const OPERACAO_STATUS_ORDER = [
@@ -22,7 +23,18 @@ export const OPERACAO_STATUS_ORDER = [
   "venda",
   "vendido",
   "encerrado",
+  "descartado",
 ] as const;
+
+export const OPERACAO_STATUS_CONCLUIDO = new Set(["vendido", "encerrado", "descartado"]);
+
+export const ORIGEM_LABELS: Record<string, string> = {
+  leilao: "Leilão",
+  anuncio: "Anúncio",
+  indicacao: "Indicação",
+  corretor: "Corretor",
+  outro: "Outro",
+};
 
 export function operacaoStatusInfo(status: string) {
   return OPERACAO_STATUS[status] ?? { label: status, tone: "neutral" as BadgeTone };

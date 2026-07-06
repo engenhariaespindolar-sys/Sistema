@@ -1,7 +1,5 @@
-import { OPERACAO_STATUS_ORDER, operacaoStatusInfo } from "@/lib/status";
+import { OPERACAO_STATUS_CONCLUIDO, OPERACAO_STATUS_ORDER, operacaoStatusInfo } from "@/lib/status";
 import type { Operacao, AnaliseViabilidade, FinanceiroLancamento } from "@/types/database";
-
-const STATUS_FINAL = new Set(["vendido", "encerrado"]);
 
 export function computeKPIs(
   operacoes: Operacao[],
@@ -18,8 +16,9 @@ export function computeKPIs(
 
   const saldoFinanceiro = totalEntradas - capitalInvestido;
 
-  const emAndamento = operacoes.filter((o) => !STATUS_FINAL.has(o.status));
-  const concluidas = operacoes.filter((o) => STATUS_FINAL.has(o.status));
+  const ativas = operacoes.filter((o) => o.status !== "descartado");
+  const emAndamento = ativas.filter((o) => !OPERACAO_STATUS_CONCLUIDO.has(o.status));
+  const concluidas = ativas.filter((o) => OPERACAO_STATUS_CONCLUIDO.has(o.status));
 
   const viabPorOperacao = new Map(viabilidades.map((v) => [v.operacao_id, v]));
 
@@ -39,8 +38,9 @@ export function computeKPIs(
     return sum + (entradas - saidas);
   }, 0);
 
+  const ativasIds = new Set(ativas.map((o) => o.id));
   const roiValues = viabilidades
-    .filter((v) => v.capital_necessario > 0)
+    .filter((v) => v.capital_necessario > 0 && ativasIds.has(v.operacao_id))
     .map((v) => (v.lucro_bruto / v.capital_necessario) * 100);
   const roiMedio = roiValues.length ? roiValues.reduce((a, b) => a + b, 0) / roiValues.length : 0;
 

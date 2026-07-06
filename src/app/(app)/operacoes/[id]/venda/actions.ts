@@ -34,6 +34,8 @@ export async function saveVenda(operacaoId: string, formData: FormData) {
     data_contrato: String(formData.get("data_contrato") ?? "") || null,
     data_escritura: String(formData.get("data_escritura") ?? "") || null,
     status: String(formData.get("status") ?? "anunciado"),
+    financiamento_mcmv: formData.get("financiamento_mcmv") === "on",
+    status_financiamento: String(formData.get("status_financiamento") ?? "") || null,
   };
 
   if (existing) {

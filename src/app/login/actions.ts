@@ -11,7 +11,13 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent("E-mail ou senha inválidos.")}`);
+    const mensagem =
+      error.code === "email_not_confirmed"
+        ? "Confirme seu e-mail antes de entrar (verifique a caixa de entrada, incluindo spam)."
+        : error.code === "invalid_credentials"
+          ? "E-mail ou senha inválidos."
+          : error.message;
+    redirect(`/login?error=${encodeURIComponent(mensagem)}`);
   }
 
   redirect("/dashboard");

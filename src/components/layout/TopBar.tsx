@@ -69,12 +69,6 @@ export function TopBar({
               >
                 Perfil
               </Link>
-              <Link
-                href="/configuracoes"
-                className="block px-3 py-2 text-sm hover:bg-black/[0.04]"
-              >
-                Configurações
-              </Link>
               <button
                 onClick={handleSignOut}
                 className="block w-full px-3 py-2 text-left text-sm text-danger hover:bg-black/[0.04]"

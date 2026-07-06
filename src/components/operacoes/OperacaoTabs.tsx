@@ -16,6 +16,7 @@ export function OperacaoTabs({ id }: { id: string }) {
     { href: `${base}/reforma`, label: "Reforma" },
     { href: `${base}/financeiro`, label: "Financeiro" },
     { href: `${base}/venda`, label: "Venda" },
+    { href: `${base}/resultado`, label: "Resultado" },
   ];
 
   return (

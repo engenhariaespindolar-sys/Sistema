@@ -7,9 +7,12 @@ export type OperacaoStatus =
   | "reforma"
   | "venda"
   | "vendido"
-  | "encerrado";
+  | "encerrado"
+  | "descartado";
 
 export type OperacaoTipo = "apartamento" | "casa" | "terreno" | "comercial" | "outro";
+
+export type OperacaoOrigem = "leilao" | "anuncio" | "indicacao" | "corretor" | "outro";
 
 export interface Operacao {
   id: string;
@@ -22,6 +25,7 @@ export interface Operacao {
   area: number | null;
   matricula: string | null;
   status: OperacaoStatus;
+  origem: string | null;
   responsavel_id: string | null;
   edital_url: string | null;
   processo: string | null;
@@ -155,6 +159,8 @@ export interface Venda {
   data_contrato: string | null;
   data_escritura: string | null;
   status: VendaStatus;
+  financiamento_mcmv: boolean;
+  status_financiamento: string | null;
   created_at: string;
 }
 

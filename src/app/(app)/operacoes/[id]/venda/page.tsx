@@ -150,6 +150,25 @@ export default async function VendaPage({
                   ))}
                 </select>
               </div>
+
+              <div className="rounded-lg border border-border-subtle p-3">
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
+                  <input
+                    type="checkbox"
+                    name="financiamento_mcmv"
+                    defaultChecked={venda?.financiamento_mcmv ?? false}
+                    className="h-4 w-4 rounded border-border-subtle"
+                  />
+                  Comprador usa financiamento Minha Casa Minha Vida
+                </label>
+                <input
+                  name="status_financiamento"
+                  defaultValue={venda?.status_financiamento ?? ""}
+                  placeholder="Situação do financiamento (ex: aguardando aprovação do banco)"
+                  className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                />
+              </div>
+
               <button
                 type="submit"
                 className="rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-primary-hover"
