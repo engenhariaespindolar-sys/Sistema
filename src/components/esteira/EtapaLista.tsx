@@ -22,7 +22,13 @@ export function EtapaLista({
 
   const columns: DataTableColumn<Operacao>[] = [
     { key: "codigo", header: "Código", accessor: (row) => row.codigo, sortable: true },
-    { key: "endereco", header: "Endereço", accessor: (row) => row.endereco, sortable: true },
+    {
+      key: "processo",
+      header: "Processo",
+      accessor: (row) => row.nome_processo ?? row.endereco,
+      sortable: true,
+      render: (row) => row.nome_processo || row.endereco,
+    },
     { key: "cidade", header: "Cidade", accessor: (row) => row.cidade, sortable: true },
   ];
 

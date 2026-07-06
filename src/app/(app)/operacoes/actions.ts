@@ -23,11 +23,18 @@ export async function createOperacao(formData: FormData) {
 
   const responsavel_id = String(formData.get("responsavel_id") ?? "") || null;
   const area = String(formData.get("area") ?? "");
+  const statusInformado = String(formData.get("status") ?? "prospeccao");
+  const status = OPERACAO_STATUS_ORDER.includes(
+    statusInformado as (typeof OPERACAO_STATUS_ORDER)[number]
+  )
+    ? statusInformado
+    : "prospeccao";
 
   const { data, error } = await supabase
     .from("operacoes")
     .insert({
       empresa_id: profile.empresa_id,
+      nome_processo: String(formData.get("nome_processo") ?? "") || null,
       endereco: String(formData.get("endereco") ?? ""),
       cidade: String(formData.get("cidade") ?? "") || null,
       estado: String(formData.get("estado") ?? "") || null,
@@ -39,6 +46,7 @@ export async function createOperacao(formData: FormData) {
       origem: String(formData.get("origem") ?? "") || null,
       valor_anuncio: Number(formData.get("valor_anuncio") ?? 0) || null,
       caracteristicas: String(formData.get("caracteristicas") ?? "") || null,
+      status,
       responsavel_id,
     })
     .select("id")
@@ -59,6 +67,7 @@ export async function updateOperacao(id: string, formData: FormData) {
   const { error } = await supabase
     .from("operacoes")
     .update({
+      nome_processo: String(formData.get("nome_processo") ?? "") || null,
       endereco: String(formData.get("endereco") ?? ""),
       cidade: String(formData.get("cidade") ?? "") || null,
       estado: String(formData.get("estado") ?? "") || null,

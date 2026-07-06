@@ -23,7 +23,7 @@ export default async function OperacaoLayout({
   return (
     <div>
       <PageHeader
-        title={operacao.endereco}
+        title={operacao.nome_processo || operacao.endereco}
         breadcrumb={["Operações", operacao.codigo]}
         actions={
           <div className="flex items-center gap-3">

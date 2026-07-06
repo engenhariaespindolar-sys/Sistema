@@ -1,14 +1,21 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EtapaLista } from "@/components/esteira/EtapaLista";
-import { listOperacoesPorStatus } from "@/lib/data/operacoes";
+import { NovoProcessoButton } from "@/components/operacoes/NovoProcessoButton";
+import { listOperacoesPorStatus, listEquipe } from "@/lib/data/operacoes";
 import { ETAPAS } from "@/lib/status";
 
 export default async function AnalisePage() {
-  const operacoes = await listOperacoesPorStatus(ETAPAS.analise.statuses);
+  const [operacoes, equipe] = await Promise.all([
+    listOperacoesPorStatus(ETAPAS.analise.statuses),
+    listEquipe(),
+  ]);
 
   return (
     <div>
-      <PageHeader title="Análise" />
+      <PageHeader
+        title="Análise"
+        actions={<NovoProcessoButton equipe={equipe} statusInicial="em_analise" />}
+      />
       <p className="mb-4 text-sm text-foreground-secondary">
         Oportunidades em estudo de viabilidade. Abra um imóvel para preencher os custos, ver a
         margem estimada e decidir: descartar, acompanhar ou aprovar a compra.

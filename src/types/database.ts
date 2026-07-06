@@ -19,6 +19,7 @@ export interface Operacao {
   id: string;
   empresa_id: string;
   codigo: string;
+  nome_processo: string | null;
   endereco: string;
   cidade: string | null;
   estado: string | null;

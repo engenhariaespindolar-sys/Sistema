@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { Operacao, Profile } from "@/types/database";
 import { ORIGEM_LABELS } from "@/lib/status";
+import { ESTADOS_BR } from "@/lib/estados";
 
 const TIPOS: { value: Operacao["tipo"]; label: string }[] = [
   { value: "apartamento", label: "Apartamento" },
@@ -14,15 +18,50 @@ export function OperacaoForm({
   operacao,
   equipe,
   submitLabel = "Salvar",
+  statusInicial,
 }: {
   action: (formData: FormData) => void;
   operacao?: Operacao;
   equipe: Pick<Profile, "id" | "nome">[];
   submitLabel?: string;
+  statusInicial?: string;
 }) {
+  const [uf, setUf] = useState(operacao?.estado ?? "");
+  const [cidades, setCidades] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!uf) return;
+    let ativo = true;
+    fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
+      .then((r) => r.json())
+      .then((data: { nome: string }[]) => {
+        if (ativo) setCidades(data.map((m) => m.nome));
+      })
+      .catch(() => {
+        if (ativo) setCidades([]);
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [uf]);
+
   return (
     <form action={action} className="space-y-4">
+      {statusInicial && <input type="hidden" name="status" value={statusInicial} />}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs font-medium text-foreground-secondary">
+            Nome do processo
+          </label>
+          <input
+            name="nome_processo"
+            defaultValue={operacao?.nome_processo ?? ""}
+            placeholder="Ex: Apartamento Centro — Leilão Caixa"
+            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary"
+          />
+        </div>
+
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-foreground-secondary">
             Endereço
@@ -37,25 +76,43 @@ export function OperacaoForm({
 
         <div>
           <label className="mb-1 block text-xs font-medium text-foreground-secondary">
-            Cidade
+            Estado (UF)
           </label>
-          <input
-            name="cidade"
-            defaultValue={operacao?.cidade ?? ""}
-            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary"
-          />
+          <select
+            name="estado"
+            value={uf}
+            onChange={(e) => {
+              setUf(e.target.value);
+              if (!e.target.value) setCidades([]);
+            }}
+            className="w-full rounded-lg border border-border-subtle bg-surface px-3 py-2 text-sm outline-none focus:border-brand-primary"
+          >
+            <option value="">Selecione o estado</option>
+            {ESTADOS_BR.map((e) => (
+              <option key={e.sigla} value={e.sigla}>
+                {e.sigla} — {e.nome}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
           <label className="mb-1 block text-xs font-medium text-foreground-secondary">
-            Estado (UF)
+            Cidade
           </label>
           <input
-            name="estado"
-            maxLength={2}
-            defaultValue={operacao?.estado ?? ""}
-            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm uppercase outline-none focus:border-brand-primary"
+            name="cidade"
+            list="lista-cidades"
+            defaultValue={operacao?.cidade ?? ""}
+            disabled={!uf}
+            placeholder={uf ? "Digite para pesquisar..." : "Escolha o estado primeiro"}
+            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary disabled:bg-black/[0.03]"
           />
+          <datalist id="lista-cidades">
+            {cidades.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
         </div>
 
         <div>
@@ -101,7 +158,7 @@ export function OperacaoForm({
 
         <div>
           <label className="mb-1 block text-xs font-medium text-foreground-secondary">
-            Processo / edital
+            Nº do processo / edital
           </label>
           <input
             name="processo"
