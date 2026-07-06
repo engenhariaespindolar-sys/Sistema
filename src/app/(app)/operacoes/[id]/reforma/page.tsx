@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SugestaoReformaIA } from "@/components/reforma/SugestaoReformaIA";
+import { ItensReforma } from "@/components/reforma/ItensReforma";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { getOperacao } from "@/lib/data/operacoes";
-import { getReforma, listDiario } from "@/lib/data/reforma";
-import { saveReforma, addDiario } from "./actions";
+import { getReforma, listDiario, listItens, listFornecedores } from "@/lib/data/reforma";
+import { saveReforma, addDiario, addItem, updateItem, deleteItem } from "./actions";
 
 const STATUS_TONE = {
   planejamento: "info",
@@ -26,11 +27,20 @@ export default async function ReformaPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [operacao, reforma] = await Promise.all([getOperacao(id), getReforma(id)]);
-  const diario = reforma ? await listDiario(reforma.id) : [];
+  const [operacao, reforma, fornecedores] = await Promise.all([
+    getOperacao(id),
+    getReforma(id),
+    listFornecedores(),
+  ]);
+  const [diario, itens] = reforma
+    ? await Promise.all([listDiario(reforma.id), listItens(reforma.id)])
+    : [[], []];
 
   const saveWithId = saveReforma.bind(null, id);
   const addDiarioWithId = reforma ? addDiario.bind(null, reforma.id, id) : null;
+  const addItemWithId = reforma ? addItem.bind(null, reforma.id, id) : null;
+  const updateItemWithId = updateItem.bind(null, id);
+  const deleteItemWithId = deleteItem.bind(null, id);
   const custoAcumulado = diario.reduce((sum, d) => sum + Number(d.custo_dia), 0);
 
   return (
@@ -182,6 +192,17 @@ export default async function ReformaPage({
           Status atual:
           <StatusBadge label={STATUS_LABEL[reforma.status]} tone={STATUS_TONE[reforma.status]} />
         </div>
+      )}
+
+      {reforma && addItemWithId && (
+        <ItensReforma
+          itens={itens}
+          fornecedores={fornecedores}
+          orcamentoTotal={reforma.orcamento_total}
+          onAdd={addItemWithId}
+          onUpdate={updateItemWithId}
+          onDelete={deleteItemWithId}
+        />
       )}
 
       <SugestaoReformaIA tipo={operacao?.tipo ?? "outro"} area={operacao?.area ?? null} />

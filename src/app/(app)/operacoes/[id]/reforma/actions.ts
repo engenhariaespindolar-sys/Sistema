@@ -52,6 +52,49 @@ export async function addDiario(reformaId: string, operacaoId: string, formData:
   revalidatePath(`/operacoes/${operacaoId}/reforma`);
 }
 
+export async function addItem(reformaId: string, operacaoId: string, formData: FormData) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("reforma_itens").insert({
+    reforma_id: reformaId,
+    tipo: String(formData.get("tipo") ?? "servico"),
+    descricao: String(formData.get("descricao") ?? ""),
+    fornecedor_id: String(formData.get("fornecedor_id") ?? "") || null,
+    quantidade: Number(formData.get("quantidade") ?? 0) || null,
+    unidade: String(formData.get("unidade") ?? "") || null,
+    valor_previsto: Number(formData.get("valor_previsto") ?? 0) || 0,
+  });
+  if (error) throw error;
+
+  revalidatePath(`/operacoes/${operacaoId}/reforma`);
+}
+
+export async function updateItem(operacaoId: string, formData: FormData) {
+  const supabase = await createClient();
+  const itemId = String(formData.get("id") ?? "");
+
+  const { error } = await supabase
+    .from("reforma_itens")
+    .update({
+      valor_realizado: Number(formData.get("valor_realizado") ?? 0) || 0,
+      status: String(formData.get("status") ?? "pendente"),
+    })
+    .eq("id", itemId);
+  if (error) throw error;
+
+  revalidatePath(`/operacoes/${operacaoId}/reforma`);
+}
+
+export async function deleteItem(operacaoId: string, formData: FormData) {
+  const supabase = await createClient();
+  const itemId = String(formData.get("id") ?? "");
+
+  const { error } = await supabase.from("reforma_itens").delete().eq("id", itemId);
+  if (error) throw error;
+
+  revalidatePath(`/operacoes/${operacaoId}/reforma`);
+}
+
 export async function sugerirReformaAction(tipo: string, area: number) {
   return sugerirReforma(tipo, area || 0);
 }

@@ -128,6 +128,31 @@ export function OperacaoForm({
           </select>
         </div>
 
+        <div>
+          <label className="mb-1 block text-xs font-medium text-foreground-secondary">
+            Valor anunciado / lance inicial
+          </label>
+          <input
+            name="valor_anuncio"
+            type="number"
+            step="0.01"
+            defaultValue={operacao?.valor_anuncio ?? ""}
+            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs font-medium text-foreground-secondary">
+            Características (quartos, vagas, condição do imóvel...)
+          </label>
+          <textarea
+            name="caracteristicas"
+            rows={2}
+            defaultValue={operacao?.caracteristicas ?? ""}
+            className="w-full rounded-lg border border-border-subtle px-3 py-2 text-sm outline-none focus:border-brand-primary"
+          />
+        </div>
+
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-foreground-secondary">
             Link do edital

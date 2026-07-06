@@ -1,4 +1,5 @@
 export type OperacaoStatus =
+  | "prospeccao"
   | "em_analise"
   | "aguardando_leilao"
   | "arrematado"
@@ -26,11 +27,54 @@ export interface Operacao {
   matricula: string | null;
   status: OperacaoStatus;
   origem: string | null;
+  valor_anuncio: number | null;
+  caracteristicas: string | null;
   responsavel_id: string | null;
   edital_url: string | null;
   processo: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export type LanceTipo = "lance" | "proposta";
+export type LanceResultado = "aguardando" | "vencedor" | "perdido" | "recusado";
+
+export interface Lance {
+  id: string;
+  operacao_id: string;
+  data: string;
+  tipo: LanceTipo;
+  valor: number;
+  resultado: LanceResultado;
+  observacao: string | null;
+  created_at: string;
+}
+
+export interface Fornecedor {
+  id: string;
+  empresa_id: string;
+  nome: string;
+  telefone: string | null;
+  especialidade: string | null;
+  observacoes: string | null;
+  created_at: string;
+}
+
+export type ReformaItemTipo = "servico" | "material";
+export type ReformaItemStatus = "pendente" | "contratado" | "em_andamento" | "concluido";
+
+export interface ReformaItem {
+  id: string;
+  reforma_id: string;
+  tipo: ReformaItemTipo;
+  descricao: string;
+  fornecedor_id: string | null;
+  quantidade: number | null;
+  unidade: string | null;
+  valor_previsto: number;
+  valor_realizado: number;
+  status: ReformaItemStatus;
+  created_at: string;
 }
 
 export interface AnaliseViabilidade {

@@ -11,6 +11,7 @@ export function OperacaoTabs({ id }: { id: string }) {
   const tabs = [
     { href: base, label: "Visão geral" },
     { href: `${base}/viabilidade`, label: "Viabilidade" },
+    { href: `${base}/aquisicao`, label: "Aquisição" },
     { href: `${base}/documentos`, label: "Documentos" },
     { href: `${base}/desocupacao`, label: "Desocupação" },
     { href: `${base}/reforma`, label: "Reforma" },

@@ -37,6 +37,8 @@ export async function createOperacao(formData: FormData) {
       processo: String(formData.get("processo") ?? "") || null,
       edital_url: String(formData.get("edital_url") ?? "") || null,
       origem: String(formData.get("origem") ?? "") || null,
+      valor_anuncio: Number(formData.get("valor_anuncio") ?? 0) || null,
+      caracteristicas: String(formData.get("caracteristicas") ?? "") || null,
       responsavel_id,
     })
     .select("id")
@@ -66,6 +68,8 @@ export async function updateOperacao(id: string, formData: FormData) {
       processo: String(formData.get("processo") ?? "") || null,
       edital_url: String(formData.get("edital_url") ?? "") || null,
       origem: String(formData.get("origem") ?? "") || null,
+      valor_anuncio: Number(formData.get("valor_anuncio") ?? 0) || null,
+      caracteristicas: String(formData.get("caracteristicas") ?? "") || null,
       responsavel_id,
     })
     .eq("id", id);
